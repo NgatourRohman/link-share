@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Quick Share - Internal Group Social Hub
 
-## Getting Started
+Quick Share adalah platform sederhana dan cepat untuk berbagi profil Instagram, LinkedIn, dan GitHub di satu tempat sentral. Didesain dengan prinsip **Zero Friction**, aplikasi ini memungkinkan pengguna untuk berbagi link media sosial mereka secara instan tanpa perlu login.
 
-First, run the development server:
+## 🚀 Fitur Utama
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Link Normalization**: Ketik `@username` atau link mentah, sistem otomatis merapikannya.
+- **Smart Username Display**: Menampilkan handle sosial media (misal: `@username`) untuk estetika yang lebih bersih.
+- **Duplicate Protection**: Mencegah link yang sama dibagikan berulang kali.
+- **Debounced Search**: Cari anggota grup dengan cepat berdasarkan nama.
+- **Premium Glassmorphism UI**: Tampilan modern, responsif, dan mobile-first.
+
+## 🛠️ Stack Teknologi
+
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Tailwind CSS
+- **Database**: Supabase
+- **Icons**: Lucide React
+- **Animations**: Framer Motion
+- **Toasts**: Sonner
+
+## 📦 Setup Database (Supabase)
+
+Sebelum menjalankan aplikasi, jalankan SQL berikut di Supabase SQL Editor Anda:
+
+```sql
+create table if not exists links (
+  id uuid default gen_random_uuid() primary key,
+  name text,
+  instagram_url text,
+  linkedin_url text,
+  github_url text,
+  created_at timestamp with time zone default now()
+);
+
+alter table links enable row level security;
+
+create policy "Allow public read access" on links for select using (true);
+create policy "Allow insert if link present" on links for insert
+with check (
+  (instagram_url is not null and instagram_url <> '') or 
+  (linkedin_url is not null and linkedin_url <> '') or
+  (github_url is not null and github_url <> '')
+);
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ⚙️ Deployment ke Vercel
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Push ke GitHub**:
+   - Buat repositori baru di GitHub.
+   - Jalankan `git push` dari komputer lokal Anda.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Hubungkan ke Vercel**:
+   - Impor repositori ini ke Vercel.
+   - Tambahkan Environment Variables:
+     - `NEXT_PUBLIC_SUPABASE_URL`
+     - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - Klik **Deploy**.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Dibuat untuk kebutuhan berbagi cepat dalam grup internal.*
