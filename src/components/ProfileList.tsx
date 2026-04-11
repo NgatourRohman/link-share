@@ -27,8 +27,18 @@ export function ProfileList({ profiles }: ProfileListProps) {
     if (!debouncedSearch) return profiles;
     
     return profiles.filter((p) => {
-      const name = p.name?.toLowerCase() || 'anon';
-      return name.includes(debouncedSearch.toLowerCase());
+      const search = debouncedSearch.toLowerCase();
+      const name = p.name?.toLowerCase() || '';
+      const instagram = p.instagram_url?.toLowerCase() || '';
+      const linkedin = p.linkedin_url?.toLowerCase() || '';
+      const github = p.github_url?.toLowerCase() || '';
+      
+      return (
+        name.includes(search) || 
+        instagram.includes(search) || 
+        linkedin.includes(search) || 
+        github.includes(search)
+      );
     });
   }, [debouncedSearch, profiles]);
 
@@ -51,7 +61,7 @@ export function ProfileList({ profiles }: ProfileListProps) {
           </div>
           <input
             type="text"
-            placeholder="Cari berdasarkan nama..."
+            placeholder="Search by name or social links..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full bg-slate-900/40 border border-slate-700/50 rounded-xl py-2 pl-10 pr-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all backdrop-blur-sm"
