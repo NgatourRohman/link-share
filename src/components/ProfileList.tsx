@@ -35,9 +35,14 @@ export function ProfileList({ profiles }: ProfileListProps) {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-        <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-          <Users className="text-indigo-400" size={24} />
-          Members Directory
+        <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Users className="text-indigo-400" size={24} />
+            Members Directory
+          </div>
+          <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium">
+            {profiles.length}
+          </span>
         </h2>
         
         <div className="relative w-full md:w-80">
