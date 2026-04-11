@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'sonner';
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${inter.variable} antialiased bg-slate-950 text-slate-100`}>
         {children}
+        <Analytics />
         <Toaster 
           position="top-center" 
           toastOptions={{
