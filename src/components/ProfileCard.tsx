@@ -1,15 +1,19 @@
+'use client';
+
 import { Instagram, Linkedin, Github, ExternalLink } from 'lucide-react';
 import { extractUsername } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 interface ProfileCardProps {
+  id: string;
   name: string | null;
   instagram_url: string | null;
   linkedin_url: string | null;
   github_url: string | null;
 }
 
-export function ProfileCard({ name, instagram_url, linkedin_url, github_url }: ProfileCardProps) {
+export function ProfileCard({ id, name, instagram_url, linkedin_url, github_url }: ProfileCardProps) {
   const displayName = name || 'Anon';
 
   return (
@@ -25,9 +29,13 @@ export function ProfileCard({ name, instagram_url, linkedin_url, github_url }: P
           <h3 className="text-lg font-semibold text-white truncate max-w-[80%]">
             {displayName}
           </h3>
-          <div className="p-2 rounded-full bg-slate-800/50 text-slate-400 group-hover:text-white group-hover:bg-indigo-500/20 transition-all">
+          <Link 
+            href={`/profile/${id}`}
+            className="p-2 rounded-full bg-slate-800/50 text-slate-400 group-hover:text-white group-hover:bg-indigo-500/20 transition-all cursor-pointer"
+            title="View shareable profile"
+          >
             <ExternalLink size={16} />
-          </div>
+          </Link>
         </div>
 
         <div className="space-y-3">
