@@ -4,6 +4,8 @@ import { ProfileContainer } from '@/components/ProfileContainer';
 import { Sparkles } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   return (
     <main className="min-h-screen py-10 md:py-20 relative overflow-hidden">
