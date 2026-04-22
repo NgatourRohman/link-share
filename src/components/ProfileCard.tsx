@@ -11,9 +11,10 @@ interface ProfileCardProps {
   instagram_url: string | null;
   linkedin_url: string | null;
   github_url: string | null;
+  showLink?: boolean;
 }
 
-export function ProfileCard({ id, name, instagram_url, linkedin_url, github_url }: ProfileCardProps) {
+export function ProfileCard({ id, name, instagram_url, linkedin_url, github_url, showLink = true }: ProfileCardProps) {
   const displayName = name || 'Anon';
 
   return (
@@ -29,13 +30,15 @@ export function ProfileCard({ id, name, instagram_url, linkedin_url, github_url 
           <h3 className="text-lg font-semibold text-white truncate max-w-[80%]">
             {displayName}
           </h3>
-          <Link 
-            href={`/profile/${id}`}
-            className="p-2 rounded-full bg-slate-800/50 text-slate-400 group-hover:text-white group-hover:bg-indigo-500/20 transition-all cursor-pointer"
-            title="View shareable profile"
-          >
-            <ExternalLink size={16} />
-          </Link>
+          {showLink && (
+            <Link 
+              href={`/profile/${id}`}
+              className="p-2 rounded-full bg-slate-800/50 text-slate-400 group-hover:text-white group-hover:bg-indigo-500/20 transition-all cursor-pointer"
+              title="View shareable profile"
+            >
+              <ExternalLink size={16} />
+            </Link>
+          )}
         </div>
 
         <div className="space-y-3">
