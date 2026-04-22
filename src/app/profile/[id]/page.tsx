@@ -61,7 +61,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           </div>
         )}
 
-        <div className="w-full transform scale-110 md:scale-125 mt-10">
+        <div className="w-full transform md:scale-125 mt-10 px-2 sm:px-0">
           <ProfileCard {...profile} showLink={false} />
         </div>
       </div>
