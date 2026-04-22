@@ -30,9 +30,9 @@ export function ProfileDetailActions() {
     <div className="flex items-center justify-between w-full max-w-md mb-8">
       <button
         onClick={handleBack}
-        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group"
+        className="flex items-center gap-2 text-[var(--muted)] hover:text-[var(--fg)] transition-colors group"
       >
-        <div className="p-2 rounded-full glass-pill group-hover:bg-slate-800/50">
+        <div className="p-2 rounded-full glass-pill group-hover:bg-[var(--pill-bg)]">
           <ArrowLeft size={18} />
         </div>
         <span className="text-sm font-medium">Kembali</span>
@@ -40,10 +40,10 @@ export function ProfileDetailActions() {
 
       <button
         onClick={handleCopyLink}
-        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group"
+        className="flex items-center gap-2 text-[var(--muted)] hover:text-[var(--fg)] transition-colors group"
       >
         <span className="text-sm font-medium">{copied ? 'Tersalin' : 'Salin Link'}</span>
-        <div className="p-2 rounded-full glass-pill group-hover:bg-indigo-500/20 group-hover:text-indigo-400 transition-all">
+        <div className="p-2 rounded-full glass-pill group-hover:bg-[var(--accent)]/10 group-hover:text-[var(--accent)] transition-all">
           {copied ? <Check size={18} /> : <Copy size={18} />}
         </div>
       </button>

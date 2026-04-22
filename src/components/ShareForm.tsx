@@ -38,13 +38,13 @@ export function ShareForm() {
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-2xl mx-auto p-8 rounded-3xl bg-slate-900/60 border border-slate-700/50 backdrop-blur-xl shadow-2xl relative overflow-hidden"
+      className="w-full max-w-2xl mx-auto p-8 rounded-3xl glass shadow-2xl relative overflow-hidden"
     >
       {/* Decorative background element */}
       <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 blur-[80px] rounded-full" />
       <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-violet-500/10 blur-[80px] rounded-full" />
 
-      <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+      <h2 className="text-2xl font-bold text-[var(--fg)] mb-6 flex items-center gap-2">
         <Send className="text-indigo-400" size={24} />
         Share Your Socials
       </h2>

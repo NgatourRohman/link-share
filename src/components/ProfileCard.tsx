@@ -19,21 +19,22 @@ export function ProfileCard({ id, name, instagram_url, linkedin_url, github_url,
 
   return (
     <motion.div 
+      layout
       initial={{ opacity: 0, scale: 0.95 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
       whileHover={{ y: -5 }}
-      className="group relative p-6 rounded-2xl bg-slate-900/40 border border-slate-700/50 backdrop-blur-md hover:bg-slate-800/60 hover:border-indigo-500/30 transition-all duration-300 shadow-lg shadow-black/20"
+      className="group relative p-6 rounded-3xl glass hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500"
     >
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-white truncate max-w-[80%]">
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-between gap-4">
+          <h3 className="text-lg font-semibold text-[var(--fg)] truncate max-w-[80%]">
             {displayName}
           </h3>
           {showLink && (
             <Link 
               href={`/profile/${id}`}
-              className="p-2 rounded-full bg-slate-800/50 text-slate-400 group-hover:text-white group-hover:bg-indigo-500/20 transition-all cursor-pointer"
+              className="p-2 rounded-full bg-[var(--card-border)] text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[var(--card-border)] transition-all cursor-pointer"
               title="View shareable profile"
             >
               <ExternalLink size={16} />
@@ -47,7 +48,7 @@ export function ProfileCard({ id, name, instagram_url, linkedin_url, github_url,
               href={instagram_url} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-3 text-sm text-slate-300 hover:text-pink-400 transition-colors"
+              className="flex items-center gap-3 text-sm text-[var(--muted)] hover:text-pink-500 transition-colors"
             >
               <Instagram size={18} className="text-pink-500" />
               <span className="truncate">{extractUsername(instagram_url, 'instagram')}</span>
@@ -59,7 +60,7 @@ export function ProfileCard({ id, name, instagram_url, linkedin_url, github_url,
               href={linkedin_url} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-3 text-sm text-slate-300 hover:text-blue-400 transition-colors"
+              className="flex items-center gap-3 text-sm text-[var(--muted)] hover:text-blue-500 transition-colors"
             >
               <Linkedin size={18} className="text-blue-500" />
               <span className="truncate">{extractUsername(linkedin_url, 'linkedin')}</span>
@@ -71,9 +72,9 @@ export function ProfileCard({ id, name, instagram_url, linkedin_url, github_url,
               href={github_url} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-3 text-sm text-slate-300 hover:text-white transition-colors"
+              className="flex items-center gap-3 text-sm text-[var(--muted)] hover:text-[var(--fg)] transition-colors"
             >
-              <Github size={18} className="text-slate-200" />
+              <Github size={18} className="text-[var(--fg)] opacity-80" />
               <span className="truncate">{extractUsername(github_url, 'github')}</span>
             </a>
           )}

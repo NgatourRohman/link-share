@@ -43,12 +43,15 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   return (
     <main className="min-h-screen py-10 md:py-20 relative overflow-hidden flex flex-col items-center">
       {/* Background gradients */}
-      <div className="fixed top-0 left-0 w-full h-full -z-20 bg-slate-950" />
+      <div className="fixed top-0 left-0 w-full h-full -z-20 bg-[var(--bg)]" />
       <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[120px] rounded-full -z-10" />
       <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-violet-500/10 blur-[120px] rounded-full -z-10" />
 
+
       <div className="container mx-auto px-4 relative z-10 flex flex-col items-center max-w-2xl">
-        <ProfileDetailActions />
+        <div className="w-full mb-8">
+          <ProfileDetailActions />
+        </div>
 
         <div className="w-full transform scale-110 md:scale-125 mt-10">
           <ProfileCard {...profile} showLink={false} />

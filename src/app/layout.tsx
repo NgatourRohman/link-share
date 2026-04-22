@@ -4,6 +4,8 @@ import "./globals.css";
 import { Toaster } from 'sonner';
 import { Analytics } from "@vercel/analytics/next";
 import { Footer } from "@/components/Footer";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -25,12 +27,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.variable} antialiased bg-slate-950 text-slate-100 min-h-screen flex flex-col`}>
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} antialiased bg-[var(--bg)] text-[var(--fg)] min-h-screen flex flex-col transition-colors duration-300`}>
+        <ThemeProvider>
+          <div className="fixed top-6 right-6 z-50">
+            <ThemeToggle />
+          </div>
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </ThemeProvider>
         <Analytics />
         <Toaster 
           position="top-center" 
