@@ -9,6 +9,10 @@ export const dynamic = 'force-dynamic';
 export default function Home() {
   return (
     <main className="min-h-screen py-10 md:py-20 relative overflow-hidden">
+      {/* Fixed Theme Toggle - Home Page Only */}
+      <div className="fixed top-6 right-6 z-50">
+        <ThemeToggle />
+      </div>
       {/* Background gradients */}
       <div className="fixed top-0 left-0 w-full h-full -z-20 bg-[var(--bg)]" />
       <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full -z-10" />
