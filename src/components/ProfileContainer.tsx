@@ -3,12 +3,29 @@ import { ProfileList } from './ProfileList';
 
 const PAGE_SIZE = 40;
 
-export async function ProfileContainer({ page: rawPage }: { page?: string }) {
-  // 1. Calculate Total Count first for accurate clamping
-  const { count: totalEntries, error: countError } = await supabase
-    .from('links')
-    .select('*', { count: 'exact', head: true })
-    .eq('is_flagged', false);
+/** Sanitizes query to prevent string injection in Supabase .or() */
+function sanitizeSearchQuery(query: string) {
+  return query.replace(/[%()',]/g, '').trim();
+}
+
+export async function ProfileContainer({ page: rawPage, q: rawQ }: { page?: string, q?: string }) {
+  const sanitizedQ = rawQ ? sanitizeSearchQuery(rawQ) : '';
+
+  // 1. Build Base Filter Logic (Used for both Count and Fetch to ensure consistency)
+  const buildBaseFilter = (queryBuilder: any) => {
+    let filtered = queryBuilder.eq('is_flagged', false);
+    if (sanitizedQ) {
+      // Postgres ILIKE with %OR% syntax for multiple columns
+      // We use .or() to search across multiple fields
+      filtered = filtered.or(`name.ilike.%${sanitizedQ}%,instagram_url.ilike.%${sanitizedQ}%,linkedin_url.ilike.%${sanitizedQ}%,github_url.ilike.%${sanitizedQ}%`);
+    }
+    return filtered;
+  };
+
+  // 2. Fetch TOTAL count with search filters
+  let countQuery = supabase.from('links').select('*', { count: 'exact', head: true });
+  countQuery = buildBaseFilter(countQuery);
+  const { count: totalEntries, error: countError } = await countQuery;
 
   if (countError) {
     console.error('Error fetching count:', countError);
@@ -18,23 +35,22 @@ export async function ProfileContainer({ page: rawPage }: { page?: string }) {
   const totalCount = totalEntries || 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
-  // 2. Sanitize and Clamp Page
+  // 3. Sanitize and Clamp Page
   const pageValue = parseInt(rawPage || '1', 10);
   const currentPage = isNaN(pageValue) ? 1 : Math.min(Math.max(1, pageValue), totalPages);
 
-  // 3. Handle Empty State early (don't run range if no data)
+  // 4. Handle Empty State early
   if (totalCount === 0) {
-    return <ProfileList profiles={[]} totalCount={0} currentPage={1} totalPages={1} />;
+    return <ProfileList profiles={[]} totalCount={0} currentPage={1} totalPages={1} initialSearch={sanitizedQ} />;
   }
 
-  // 4. Fetch Paginated Data with Stable Ordering
+  // 5. Fetch Paginated Data with IDENTICAL filters
   const from = (currentPage - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
-  const { data: profiles, error: fetchError } = await supabase
-    .from('links')
-    .select('*')
-    .eq('is_flagged', false)
+  let dataQuery = supabase.from('links').select('*');
+  dataQuery = buildBaseFilter(dataQuery);
+  const { data: profiles, error: fetchError } = await dataQuery
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -53,6 +69,7 @@ export async function ProfileContainer({ page: rawPage }: { page?: string }) {
       totalCount={totalCount} 
       currentPage={currentPage}
       totalPages={totalPages}
+      initialSearch={sanitizedQ}
     />
   );
 }

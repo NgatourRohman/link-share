@@ -7,11 +7,14 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 export const dynamic = 'force-dynamic';
 
 interface HomeProps {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ 
+    page?: string;
+    q?: string;
+  }>;
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const { page } = await searchParams;
+  const { page, q } = await searchParams;
   return (
     <main className="min-h-screen py-10 md:py-20 relative overflow-hidden">
       {/* Fixed Theme Toggle - Home Page Only */}
@@ -55,7 +58,7 @@ export default async function Home({ searchParams }: HomeProps) {
               <p className="text-slate-500 animate-pulse">Memuat direktori anggota...</p>
             </div>
           }>
-            <ProfileContainer page={page} />
+            <ProfileContainer page={page} q={q} />
           </Suspense>
         </div>
 

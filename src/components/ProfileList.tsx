@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Users } from 'lucide-react';
 import { useDebounce } from 'use-debounce';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { ProfileCard } from './ProfileCard';
 import { Pagination } from './Pagination';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -22,34 +23,42 @@ interface ProfileListProps {
   totalCount: number;
   currentPage: number;
   totalPages: number;
+  initialSearch?: string;
 }
 
-export function ProfileList({ profiles, totalCount, currentPage, totalPages }: ProfileListProps) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearch] = useDebounce(searchTerm, 300);
+export function ProfileList({ 
+  profiles, 
+  totalCount, 
+  currentPage, 
+  totalPages,
+  initialSearch = '' 
+}: ProfileListProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
+  const [debouncedSearch] = useDebounce(searchTerm, 500);
 
-  const filteredProfiles = useMemo(() => {
-    // 1. First filter out flagged profiles (moderation)
-    const activeProfiles = profiles.filter(p => !p.is_flagged);
+  // Sync search query to URL with 500ms debounce
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    const currentQ = searchParams.get('q') || '';
     
-    if (!debouncedSearch) return activeProfiles;
-    
-    // 2. Then apply search filter
-    return activeProfiles.filter((p) => {
-      const search = debouncedSearch.toLowerCase();
-      const name = p.name?.toLowerCase() || '';
-      const instagram = p.instagram_url?.toLowerCase() || '';
-      const linkedin = p.linkedin_url?.toLowerCase() || '';
-      const github = p.github_url?.toLowerCase() || '';
+    // Only update if search changed
+    if (debouncedSearch !== currentQ) {
+      if (debouncedSearch) {
+        params.set('q', debouncedSearch);
+      } else {
+        params.delete('q');
+      }
       
-      return (
-        name.includes(search) || 
-        instagram.includes(search) || 
-        linkedin.includes(search) || 
-        github.includes(search)
-      );
-    });
-  }, [debouncedSearch, profiles]);
+      // Always reset to page 1 when search term changes
+      params.set('page', '1');
+      
+      router.push(`${pathname}?${params.toString()}`);
+    }
+  }, [debouncedSearch, pathname, router, searchParams]);
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-12">
@@ -70,7 +79,7 @@ export function ProfileList({ profiles, totalCount, currentPage, totalPages }: P
           </div>
           <input
             type="text"
-            placeholder="Search by name or social links..."
+            placeholder="Search name or social links..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full bg-[var(--input-bg)] border border-[var(--input-border)] rounded-xl py-2 pl-10 pr-4 text-[var(--fg)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all backdrop-blur-sm"
@@ -78,19 +87,32 @@ export function ProfileList({ profiles, totalCount, currentPage, totalPages }: P
         </div>
       </div>
 
-      {filteredProfiles.length === 0 ? (
+      {profiles.length === 0 ? (
         <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-20 bg-[var(--pill-bg)] rounded-3xl border border-dashed border-[var(--pill-border)]"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center py-24 rounded-3xl border-2 border-dashed border-[var(--card-border)] bg-[var(--card-bg)]/30 backdrop-blur-sm"
         >
-          <div className="text-[var(--muted)] mb-2">No profiles found.</div>
-          <div className="text-[var(--muted-foreground)] text-sm">Coba cari dengan kata kunci lain atau jadilah yang pertama berbagi!</div>
+          <div className="inline-flex items-center justify-center p-4 rounded-full bg-indigo-500/10 text-indigo-400 mb-6">
+            <Search size={32} />
+          </div>
+          <h3 className="text-xl font-bold text-[var(--fg)] mb-2">Tidak ada profil ditemukan</h3>
+          <p className="text-[var(--muted-foreground)] max-w-sm mx-auto">
+            Kami tidak menemukan hasil untuk "{searchTerm}". Coba gunakan kata kunci lain atau bersihkan pencarian Anda.
+          </p>
+          {searchTerm && (
+            <button 
+              onClick={() => setSearchTerm('')}
+              className="mt-6 px-6 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold transition-all shadow-lg shadow-indigo-500/20"
+            >
+              Bersihkan Pencarian
+            </button>
+          )}
         </motion.div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <AnimatePresence mode="popLayout">
-            {filteredProfiles.map((p) => (
+            {profiles.map((p) => (
               <ProfileCard key={p.id} {...p} />
             ))}
           </AnimatePresence>
