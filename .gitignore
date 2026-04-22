@@ -39,6 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-  
-# scratch scripts  
-/scratch 
+
+# ide
+.vscode/
+.idea/
+
+# windows
+Thumbs.db
+desktop.ini
+
+# scratch scripts
+/scratch
