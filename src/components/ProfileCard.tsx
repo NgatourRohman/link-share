@@ -49,9 +49,9 @@ export function ProfileCard({ id, name, instagram_url, linkedin_url, github_url,
       className="group relative p-6 rounded-3xl glass hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500"
     >
       <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex flex-col gap-1 overflow-hidden">
-            <h3 className="text-lg font-semibold text-[var(--fg)] truncate">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-1 min-w-0">
+            <h3 className="text-lg font-semibold text-[var(--fg)] line-clamp-2 break-words leading-snug overflow-hidden" title={displayName}>
               {displayName}
             </h3>
           </div>
