@@ -37,15 +37,15 @@ export function validateSocialLink(input: string, platform: SocialPlatform): Val
 
       if (platform === 'instagram') {
         if (!isOfficialDomain(hostname, 'instagram.com')) return { isValid: false, error: 'Bukan domain Instagram resmi.' };
-        const username = path.split('/')[1];
-        if (!username) return { isValid: false, error: 'Link Instagram harus menyertakan username.' };
-        return validateSocialLink(username, 'instagram'); // Recurse with extracted handle
+        const username = path.split('/').filter(Boolean)[0];
+        if (!username) return { isValid: false, error: 'Link Instagram tidak lengkap (username hilang).' };
+        return validateSocialLink(username, 'instagram');
       }
 
       if (platform === 'github') {
         if (!isOfficialDomain(hostname, 'github.com')) return { isValid: false, error: 'Bukan domain GitHub resmi.' };
-        const username = path.split('/')[1];
-        if (!username) return { isValid: false, error: 'Link GitHub harus menyertakan username.' };
+        const username = path.split('/').filter(Boolean)[0];
+        if (!username) return { isValid: false, error: 'Link GitHub tidak lengkap (username hilang).' };
         return validateSocialLink(username, 'github');
       }
 
@@ -55,9 +55,11 @@ export function validateSocialLink(input: string, platform: SocialPlatform): Val
         const hasValidPath = validPaths.some(p => path.startsWith(p));
         if (!hasValidPath) return { isValid: false, error: 'Format link LinkedIn tidak dikenali (gunakan /in/ atau /company/).' };
         
-        const slug = path.split('/').filter(Boolean).slice(1).join('/');
-        if (!slug) return { isValid: false, error: 'Link LinkedIn tidak lengkap.' };
-        return { isValid: true, sanitizedValue: slug }; // Special case for LinkedIn
+        const pathParts = path.split('/').filter(Boolean);
+        if (pathParts.length < 2) return { isValid: false, error: 'Link LinkedIn tidak lengkap (slug hilang).' };
+        
+        const slug = pathParts.slice(1).join('/');
+        return { isValid: true, sanitizedValue: slug };
       }
     } catch (e) {
       return { isValid: false, error: 'Format URL tidak valid.' };
@@ -66,14 +68,16 @@ export function validateSocialLink(input: string, platform: SocialPlatform): Val
 
   // 2. Format check for handles (Username)
   if (platform === 'instagram') {
-    const igRegex = /^[a-zA-Z0-9._]{1,30}$/;
-    if (!igRegex.test(trimmed)) return { isValid: false, error: 'Username Instagram hanya boleh huruf, angka, titik, atau garis bawah.' };
+    // IG valid: chars, nums, dots, underscores. No trailing dot. 1-30 chars.
+    const igRegex = /^[a-zA-Z0-9._]{1,29}[a-zA-Z0-9_]$/;
+    if (!igRegex.test(trimmed)) return { isValid: false, error: 'Format username Instagram tidak valid (cek karakter khusus di akhir).' };
     return { isValid: true, sanitizedValue: trimmed.toLowerCase() };
   }
 
   if (platform === 'github') {
+    // GitHub: alfanum or single hyphen. No trailing hyphen. Max 39.
     const githubRegex = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
-    if (!githubRegex.test(trimmed)) return { isValid: false, error: 'Format username GitHub tidak sesuai aturan.' };
+    if (!githubRegex.test(trimmed)) return { isValid: false, error: 'Format username GitHub tidak valid (cek tanda hubung di akhir).' };
     return { isValid: true, sanitizedValue: trimmed.toLowerCase() };
   }
 
