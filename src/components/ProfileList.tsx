@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Search, Users } from 'lucide-react';
 import { useDebounce } from 'use-debounce';
 import { ProfileCard } from './ProfileCard';
+import { Pagination } from './Pagination';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Profile {
@@ -19,9 +20,11 @@ interface Profile {
 interface ProfileListProps {
   profiles: Profile[];
   totalCount: number;
+  currentPage: number;
+  totalPages: number;
 }
 
-export function ProfileList({ profiles, totalCount }: ProfileListProps) {
+export function ProfileList({ profiles, totalCount, currentPage, totalPages }: ProfileListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearch] = useDebounce(searchTerm, 300);
 
@@ -93,6 +96,9 @@ export function ProfileList({ profiles, totalCount }: ProfileListProps) {
           </AnimatePresence>
         </div>
       )}
+
+      {/* Navigation Footer */}
+      <Pagination currentPage={currentPage} totalPages={totalPages} />
     </div>
   );
 }
