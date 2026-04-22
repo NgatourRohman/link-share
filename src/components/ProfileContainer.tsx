@@ -2,12 +2,20 @@ import { supabase } from '@/lib/supabase';
 import { ProfileList } from './ProfileList';
 
 export async function ProfileContainer() {
-  // Fetch latest 100 profiles, ordered by creation date (DESC)
-  const { data: profiles, error } = await supabase
+  // Fetch latest 100 profiles for display
+  const { data: profiles, error: fetchError } = await supabase
     .from('links')
     .select('*')
     .order('created_at', { ascending: false })
     .limit(100);
+
+  // Fetch TOTAL count of non-flagged profiles for the badge
+  const { count: totalCount, error: countError } = await supabase
+    .from('links')
+    .select('*', { count: 'exact', head: true })
+    .eq('is_flagged', false);
+
+  const error = fetchError || countError;
 
   if (error) {
     console.error('Error fetching profiles:', error);
@@ -18,5 +26,5 @@ export async function ProfileContainer() {
     );
   }
 
-  return <ProfileList profiles={profiles || []} />;
+  return <ProfileList profiles={profiles || []} totalCount={totalCount || 0} />;
 }

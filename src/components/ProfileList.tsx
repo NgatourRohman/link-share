@@ -18,9 +18,10 @@ interface Profile {
 
 interface ProfileListProps {
   profiles: Profile[];
+  totalCount: number;
 }
 
-export function ProfileList({ profiles }: ProfileListProps) {
+export function ProfileList({ profiles, totalCount }: ProfileListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearch] = useDebounce(searchTerm, 300);
 
@@ -47,8 +48,6 @@ export function ProfileList({ profiles }: ProfileListProps) {
     });
   }, [debouncedSearch, profiles]);
 
-  const activeCount = useMemo(() => profiles.filter(p => !p.is_flagged).length, [profiles]);
-
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
@@ -58,7 +57,7 @@ export function ProfileList({ profiles }: ProfileListProps) {
             Members Directory
           </div>
           <span className="px-2.5 py-0.5 rounded-full bg-[var(--pill-bg)] border border-[var(--pill-border)] text-indigo-400 text-sm font-medium">
-            {activeCount}
+            {totalCount}
           </span>
         </h2>
         
