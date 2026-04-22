@@ -53,12 +53,6 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         <div className="w-full transform scale-110 md:scale-125 mt-10">
           <ProfileCard {...profile} />
         </div>
-
-        <div className="mt-24 text-center">
-          <p className="text-slate-500 text-sm">
-            Dibagikan melalui <span className="text-indigo-400 font-semibold">Quick Share</span>
-          </p>
-        </div>
       </div>
     </main>
   );

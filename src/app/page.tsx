@@ -44,12 +44,7 @@ export default function Home() {
           </Suspense>
         </div>
 
-        {/* Footer */}
-        <footer className="mt-20 py-10 text-center border-t border-slate-900">
-          <p className="text-slate-600 text-sm italic">
-            &copy; {new Date().getFullYear()} Quick Share Internal Hub. No cookies, no tracking, just sharing.
-          </p>
-        </footer>
+        {/* End of Content */}
       </div>
     </main>
   );

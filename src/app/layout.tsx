@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'sonner';
 import { Analytics } from "@vercel/analytics/next";
+import { Footer } from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -25,8 +26,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} antialiased bg-slate-950 text-slate-100`}>
-        {children}
+      <body className={`${inter.variable} antialiased bg-slate-950 text-slate-100 min-h-screen flex flex-col`}>
+        <main className="flex-1">
+          {children}
+        </main>
+        <Footer />
         <Analytics />
         <Toaster 
           position="top-center" 
