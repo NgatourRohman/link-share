@@ -13,6 +13,7 @@ interface Profile {
   linkedin_url: string | null;
   github_url: string | null;
   created_at: string;
+  is_flagged?: boolean;
 }
 
 interface ProfileListProps {
@@ -24,9 +25,13 @@ export function ProfileList({ profiles }: ProfileListProps) {
   const [debouncedSearch] = useDebounce(searchTerm, 300);
 
   const filteredProfiles = useMemo(() => {
-    if (!debouncedSearch) return profiles;
+    // 1. First filter out flagged profiles (moderation)
+    const activeProfiles = profiles.filter(p => !p.is_flagged);
     
-    return profiles.filter((p) => {
+    if (!debouncedSearch) return activeProfiles;
+    
+    // 2. Then apply search filter
+    return activeProfiles.filter((p) => {
       const search = debouncedSearch.toLowerCase();
       const name = p.name?.toLowerCase() || '';
       const instagram = p.instagram_url?.toLowerCase() || '';
@@ -42,6 +47,8 @@ export function ProfileList({ profiles }: ProfileListProps) {
     });
   }, [debouncedSearch, profiles]);
 
+  const activeCount = useMemo(() => profiles.filter(p => !p.is_flagged).length, [profiles]);
+
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-12">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
@@ -51,7 +58,7 @@ export function ProfileList({ profiles }: ProfileListProps) {
             Members Directory
           </div>
           <span className="px-2.5 py-0.5 rounded-full bg-[var(--pill-bg)] border border-[var(--pill-border)] text-indigo-400 text-sm font-medium">
-            {profiles.length}
+            {activeCount}
           </span>
         </h2>
         

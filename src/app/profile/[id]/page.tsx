@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ProfileCard } from '@/components/ProfileCard';
 import { ProfileDetailActions } from '@/components/ProfileDetailActions';
+import { AlertCircle } from 'lucide-react';
 
 interface ProfilePageProps {
   params: Promise<{ id: string }>;
@@ -48,10 +49,17 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-violet-500/10 blur-[120px] rounded-full -z-10" />
 
 
-      <div className="container mx-auto px-4 relative z-10 flex flex-col items-center max-w-2xl">
+      <div className="container mx-auto px-4 relative z-10 flex flex-col items-center max-w-2xl text-center">
         <div className="w-full mb-8">
           <ProfileDetailActions />
         </div>
+
+        {profile.is_flagged && (
+          <div className="w-full mb-8 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-center gap-3 justify-center text-sm font-medium animate-pulse">
+            <AlertCircle size={20} />
+            <span>Profil ini sedang dalam peninjauan moderasi karena laporan spam.</span>
+          </div>
+        )}
 
         <div className="w-full transform scale-110 md:scale-125 mt-10">
           <ProfileCard {...profile} showLink={false} />

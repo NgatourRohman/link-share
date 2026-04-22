@@ -50,6 +50,16 @@ export function ShareForm() {
       </h2>
 
       <form ref={formRef} action={handleSubmit} className="space-y-4 relative z-10">
+        {/* Stealth Honeypot Field */}
+        <input 
+          type="text" 
+          name="confirm_email" 
+          tabIndex={-1} 
+          autoComplete="off"
+          style={{ display: 'none', position: 'absolute', left: '-9999px' }}
+          aria-hidden="true" 
+        />
+
         <FormInput 
           label="Nama (Opsional)" 
           name="name"

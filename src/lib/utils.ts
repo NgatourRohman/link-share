@@ -14,6 +14,37 @@ interface ValidationResult {
 }
 
 /**
+ * Validates user names: 3-40 chars, must contain letters, no symbols-only.
+ */
+export function validateName(name: string): ValidationResult {
+  if (!name) return { isValid: true, sanitizedValue: 'Anon' }; // Default
+  const trimmed = name.trim();
+  
+  if (trimmed.length < 3 || trimmed.length > 40) {
+    return { isValid: false, error: 'Nama harus antara 3 - 40 karakter.' };
+  }
+
+  // Regex: Allow letters, spaces, dots, and hyphens. Must have at least one letter.
+  const nameRegex = /^(?=.*[a-zA-Z])[a-zA-Z\s.-]+$/;
+  if (!nameRegex.test(trimmed)) {
+    return { isValid: false, error: 'Nama hanya boleh berisi huruf, spasi, titik, atau tanda hubung.' };
+  }
+
+  return { isValid: true, sanitizedValue: trimmed };
+}
+
+/**
+ * Generates a SHA-256 fingerprint from IP and User-Agent.
+ */
+export async function getFingerprint(ip: string, ua: string): Promise<string> {
+  const data = `${ip}-${ua}`;
+  const msgUint8 = new TextEncoder().encode(data);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
  * Validates a social media handle or URL.
  * Returns an object with the result and an optional error message.
  */
