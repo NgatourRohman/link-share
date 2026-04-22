@@ -16,7 +16,8 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
   const createPageURL = (pageNumber: number | string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('page', pageNumber.toString());
-    return `/?${params.toString()}`;
+    // Add #directory to target the scroll to the list top
+    return `/?${params.toString()}#directory`;
   };
 
   if (totalPages <= 1) return null;
@@ -26,7 +27,6 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
       {/* Previous Button */}
       <Link
         href={createPageURL(currentPage - 1)}
-        scroll={false}
         className={cn(
           "flex items-center gap-2 px-4 py-2 rounded-xl glass border border-[var(--card-border)] transition-all duration-300 hover:bg-indigo-500/10 text-sm font-medium focus:ring-2 focus:ring-indigo-500/50",
           currentPage <= 1 ? "opacity-30 pointer-events-none cursor-not-allowed" : "cursor-pointer"
@@ -46,7 +46,6 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
       {/* Next Button */}
       <Link
         href={createPageURL(currentPage + 1)}
-        scroll={false}
         className={cn(
           "flex items-center gap-2 px-4 py-2 rounded-xl glass border border-[var(--card-border)] transition-all duration-300 hover:bg-indigo-500/10 text-sm font-medium focus:ring-2 focus:ring-indigo-500/50",
           currentPage >= totalPages ? "opacity-30 pointer-events-none cursor-not-allowed" : "cursor-pointer"

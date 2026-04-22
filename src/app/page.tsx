@@ -51,7 +51,7 @@ export default async function Home({ searchParams }: HomeProps) {
         </div>
 
         {/* Directory Section */}
-        <div className="pt-10 border-t border-slate-800/50">
+        <div id="directory" className="pt-10 border-t border-slate-800/50 scroll-mt-10">
           <Suspense fallback={
             <div className="w-full py-20 flex flex-col items-center justify-center gap-4">
               <div className="w-10 h-10 border-4 border-slate-800 border-t-indigo-500 rounded-full animate-spin" />
