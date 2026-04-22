@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { supabase } from '@/lib/supabase';
-import { normalizeInstagram, normalizeLinkedIn, normalizeGithub } from '@/lib/utils';
+import { validateSocialLink, normalizeSocialLink } from '@/lib/utils';
 
 export type ActionResponse = {
   success: boolean;
@@ -12,30 +12,33 @@ export type ActionResponse = {
 export async function shareProfile(formData: FormData): Promise<ActionResponse> {
   try {
     const name = (formData.get('name') as string)?.trim() || null;
-    const instagramRaw = formData.get('instagram') as string;
-    const linkedinRaw = formData.get('linkedin') as string;
-    const githubRaw = formData.get('github') as string;
+    const instagramRaw = (formData.get('instagram') as string)?.trim();
+    const linkedinRaw = (formData.get('linkedin') as string)?.trim();
+    const githubRaw = (formData.get('github') as string)?.trim();
 
-    // Normalization
-    const instagram_url = normalizeInstagram(instagramRaw);
-    const linkedin_url = normalizeLinkedIn(linkedinRaw);
-    const github_url = normalizeGithub(githubRaw);
-
-    // Validation: At least one link
-    if (!instagram_url && !linkedin_url && !github_url) {
+    // 1. Check if at least one link is provided
+    if (!instagramRaw && !linkedinRaw && !githubRaw) {
       return { success: false, message: 'Minimal salah satu link (Instagram, LinkedIn, atau GitHub) harus diisi.' };
     }
 
-    // Domain validation
-    if (instagram_url && !instagram_url.includes('instagram.com')) {
-      return { success: false, message: 'Link Instagram tidak valid.' };
+    // 2. Strict Validation per Platform
+    if (instagramRaw) {
+      const v = validateSocialLink(instagramRaw, 'instagram');
+      if (!v.isValid) return { success: false, message: `Instagram: ${v.error}` };
     }
-    if (linkedin_url && !linkedin_url.includes('linkedin.com')) {
-      return { success: false, message: 'Link LinkedIn tidak valid.' };
+    if (linkedinRaw) {
+      const v = validateSocialLink(linkedinRaw, 'linkedin');
+      if (!v.isValid) return { success: false, message: `LinkedIn: ${v.error}` };
     }
-    if (github_url && !github_url.includes('github.com')) {
-      return { success: false, message: 'Link GitHub tidak valid.' };
+    if (githubRaw) {
+      const v = validateSocialLink(githubRaw, 'github');
+      if (!v.isValid) return { success: false, message: `GitHub: ${v.error}` };
     }
+
+    // 3. Normalization (Safe to call now)
+    const instagram_url = instagramRaw ? normalizeSocialLink(instagramRaw, 'instagram') : null;
+    const linkedin_url = linkedinRaw ? normalizeSocialLink(linkedinRaw, 'linkedin') : null;
+    const github_url = githubRaw ? normalizeSocialLink(githubRaw, 'github') : null;
 
     // Duplicate check: only check for non-null URLs
     const duplicateChecks = [];

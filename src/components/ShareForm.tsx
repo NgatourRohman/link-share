@@ -64,6 +64,7 @@ export function ShareForm() {
             placeholder="@username atau link" 
             icon={Instagram}
             iconColor="text-pink-500"
+            helperText="Contoh: @arthur atau link profil"
           />
           <FormInput 
             label="LinkedIn" 
@@ -71,6 +72,7 @@ export function ShareForm() {
             placeholder="Username atau link" 
             icon={Linkedin}
             iconColor="text-blue-500"
+            helperText="Contoh: arthur-dev atau /in/arthur"
           />
         </div>
 
@@ -79,7 +81,8 @@ export function ShareForm() {
           name="github"
           placeholder="Username atau link" 
           icon={Github}
-          iconColor="text-slate-200"
+          iconColor="text-[var(--fg)]"
+          helperText="Contoh: arthur-git"
         />
 
         <button

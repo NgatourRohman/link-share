@@ -5,14 +5,22 @@ interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   icon: LucideIcon;
   iconColor?: string;
+  helperText?: string;
 }
 
-export function FormInput({ label, icon: Icon, iconColor, className, ...props }: FormInputProps) {
+export function FormInput({ label, icon: Icon, iconColor, helperText, className, ...props }: FormInputProps) {
   return (
     <div className="flex flex-col gap-1.5 w-full">
-      <label className="text-sm font-medium text-[var(--muted)] ml-1">
-        {label}
-      </label>
+      <div className="flex items-center justify-between ml-1">
+        <label className="text-sm font-medium text-[var(--muted)]">
+          {label}
+        </label>
+        {helperText && (
+          <span className="text-[10px] text-[var(--muted-foreground)] opacity-70">
+            {helperText}
+          </span>
+        )}
+      </div>
       <div className="relative group">
         <div className={cn(
           "absolute left-3 top-1/2 -translate-y-1/2 transition-colors z-10",
