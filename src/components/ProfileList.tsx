@@ -56,7 +56,7 @@ export function ProfileList({
       // Always reset to page 1 when search term changes
       params.set('page', '1');
       
-      router.push(`${pathname}?${params.toString()}`);
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
     }
   }, [debouncedSearch, pathname, router, searchParams]);
 
